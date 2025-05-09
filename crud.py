@@ -51,6 +51,15 @@ def eliminar_producto(db: Session, producto_id: int):
         db.delete(db_producto)
         db.commit()
     return db_producto
+def actualizar_producto(db: Session, producto_id: int, datos: schemas.ProductoUpdate):
+    producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
+    if producto is None:
+        return None
+    for campo, valor in datos.dict().items():
+        setattr(producto, campo, valor)
+    db.commit()
+    db.refresh(producto)
+    return producto
 
 # Clientes
 def get_clientes(db: Session):
@@ -72,3 +81,13 @@ def eliminar_cliente(db: Session, cliente_id: int):
         db.delete(db_cliente)
         db.commit()
     return db_cliente
+
+def actualizar_cliente(db: Session, cliente_id: int, datos: schemas.ClienteUpdate):
+    cliente = db.query(models.Cliente).filter(models.Cliente.id == cliente_id).first()
+    if cliente is None:
+        return None
+    for campo, valor in datos.dict().items():
+        setattr(cliente, campo, valor)
+    db.commit()
+    db.refresh(cliente)
+    return cliente

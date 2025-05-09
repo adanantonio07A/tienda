@@ -65,6 +65,14 @@ def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Producto no encontrado")
     return {"ok": True}
 
+@app.put("/productos/{producto_id}", response_model=schemas.Producto)
+def editar_producto(producto_id: int, datos: schemas.ProductoUpdate, db: Session = Depends(get_db)):
+    producto = crud.actualizar_producto(db, producto_id, datos)
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    return producto
+
+
 # Rutas clientes
 @app.post("/clientes/", response_model=schemas.Cliente)
 def crear_cliente(cliente: schemas.ClienteCreate, db: Session = Depends(get_db)):
@@ -80,3 +88,10 @@ def eliminar_cliente(cliente_id: int, db: Session = Depends(get_db)):
     if not cli:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return {"ok": True}
+
+@app.put("/clientes/{cliente_id}", response_model=schemas.Cliente)
+def editar_cliente(cliente_id: int, datos: schemas.ClienteUpdate, db: Session = Depends(get_db)):
+    cliente = crud.actualizar_cliente(db, cliente_id, datos)
+    if not cliente:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    return cliente

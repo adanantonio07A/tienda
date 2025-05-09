@@ -35,6 +35,11 @@ class Producto(ProductoBase):
     class Config:
         from_attributes = True
 
+class ProductoUpdate(BaseModel):
+    nombre: str
+    descripcion: str | None = None
+
+
 class ClienteBase(BaseModel):
     nombre: str
     email: str
@@ -47,3 +52,7 @@ class Cliente(ClienteBase):
 
     class Config:
         from_attributes = True
+
+class ClienteUpdate(BaseModel):
+    nombre: str
+    email: str
