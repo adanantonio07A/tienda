@@ -36,6 +36,9 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import crud, models, schemas
 from database import SessionLocal, engine
+from typing import List, Optional
+from fastapi import Query
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -54,9 +57,16 @@ def get_db():
 def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_db)):
     return crud.crear_producto(db, producto)
 
-@app.get("/productos/", response_model=list[schemas.Producto])
-def listar_productos(db: Session = Depends(get_db)):
-    return crud.get_productos(db)
+#@app.get("/productos/", response_model=list[schemas.Producto])
+#def listar_productos(db: Session = Depends(get_db)):
+#    return crud.get_productos(db)
+
+@app.get("/productos/", response_model=List[schemas.Producto])
+def listar_productos(nombre: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    if nombre:
+        return db.query(models.Producto).filter(models.Producto.nombre.ilike(f"%{nombre}%")).all()
+    return db.query(models.Producto).all()
+
 
 @app.delete("/productos/{producto_id}")
 def eliminar_producto(producto_id: int, db: Session = Depends(get_db)):
@@ -78,9 +88,16 @@ def editar_producto(producto_id: int, datos: schemas.ProductoUpdate, db: Session
 def crear_cliente(cliente: schemas.ClienteCreate, db: Session = Depends(get_db)):
     return crud.crear_cliente(db, cliente)
 
-@app.get("/clientes/", response_model=list[schemas.Cliente])
-def listar_clientes(db: Session = Depends(get_db)):
-    return crud.get_clientes(db)
+#@app.get("/clientes/", response_model=list[schemas.Cliente])
+#def listar_clientes(db: Session = Depends(get_db)):
+#    return crud.get_clientes(db)
+
+@app.get("/clientes/", response_model=List[schemas.Cliente])
+def listar_clientes(nombre: Optional[str] = Query(None), db: Session = Depends(get_db)):
+    if nombre:
+        return db.query(models.Cliente).filter(models.Cliente.nombre.ilike(f"%{nombre}%")).all()
+    return db.query(models.Cliente).all()
+
 
 @app.delete("/clientes/{cliente_id}")
 def eliminar_cliente(cliente_id: int, db: Session = Depends(get_db)):
@@ -95,3 +112,6 @@ def editar_cliente(cliente_id: int, datos: schemas.ClienteUpdate, db: Session = 
     if not cliente:
         raise HTTPException(status_code=404, detail="Cliente no encontrado")
     return cliente
+
+# to run the code:
+#uvicorn main:app --reload
