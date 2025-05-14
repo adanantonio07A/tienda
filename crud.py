@@ -29,7 +29,7 @@ def eliminar_producto(db: Session, producto_id: int):
     return producto
 """
 from sqlalchemy.orm import Session
-import models, schemas
+import models, schemas, auth
 
 # Productos
 def get_productos(db: Session):
@@ -91,3 +91,18 @@ def actualizar_cliente(db: Session, cliente_id: int, datos: schemas.ClienteUpdat
     db.commit()
     db.refresh(cliente)
     return cliente
+
+def crear_usuario(db: Session, usuario: schemas.UsuarioCreate):
+    hashed_password = auth.hashear_password(usuario.password)
+    db_usuario = models.Usuario(
+        nombre=usuario.nombre,
+        email=usuario.email,
+        hashed_password=hashed_password
+    )
+    db.add(db_usuario)
+    db.commit()
+    db.refresh(db_usuario)
+    return db_usuario
+
+def obtener_usuario_por_email(db: Session, email: str):
+    return db.query(models.Usuario).filter(models.Usuario.email == email).first()

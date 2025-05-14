@@ -56,3 +56,16 @@ class Cliente(ClienteBase):
 class ClienteUpdate(BaseModel):
     nombre: str
     email: str
+
+class UsuarioCreate(BaseModel):
+    nombre: str
+    email: str
+    password: str
+
+class UsuarioOut(BaseModel):
+    id: int
+    nombre: str
+    email: str
+
+    class Config:
+        from_attributes = True
