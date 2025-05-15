@@ -39,7 +39,7 @@ def get_producto(db: Session, producto_id: int):
     return db.query(models.Producto).filter(models.Producto.id == producto_id).first()
 
 def crear_producto(db: Session, producto: schemas.ProductoCreate):
-    db_producto = models.Producto(**producto.dict())
+    db_producto = models.Producto(**producto.model_dump())
     db.add(db_producto)
     db.commit()
     db.refresh(db_producto)
@@ -55,7 +55,7 @@ def actualizar_producto(db: Session, producto_id: int, datos: schemas.ProductoUp
     producto = db.query(models.Producto).filter(models.Producto.id == producto_id).first()
     if producto is None:
         return None
-    for campo, valor in datos.dict().items():
+    for campo, valor in datos.model_dump().items():
         setattr(producto, campo, valor)
     db.commit()
     db.refresh(producto)
@@ -69,7 +69,7 @@ def get_cliente(db: Session, cliente_id: int):
     return db.query(models.Cliente).filter(models.Cliente.id == cliente_id).first()
 
 def crear_cliente(db: Session, cliente: schemas.ClienteCreate):
-    db_cliente = models.Cliente(**cliente.dict())
+    db_cliente = models.Cliente(**cliente.model_dump())
     db.add(db_cliente)
     db.commit()
     db.refresh(db_cliente)
@@ -86,7 +86,7 @@ def actualizar_cliente(db: Session, cliente_id: int, datos: schemas.ClienteUpdat
     cliente = db.query(models.Cliente).filter(models.Cliente.id == cliente_id).first()
     if cliente is None:
         return None
-    for campo, valor in datos.dict().items():
+    for campo, valor in datos.model_dump().items():
         setattr(cliente, campo, valor)
     db.commit()
     db.refresh(cliente)
