@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        VENV_DIR = 'venv'
+        VENV_PATH = 'venv'
     }
 
     stages {
@@ -11,17 +11,35 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/adanantonio07A/tienda.git'
             }
         }
-
         stage('Preparar entorno') {
+            agent {
+                docker {
+                    image 'python:3.10'
+                }
+            }
             steps {
-                sh 'python -m venv $VENV_DIR'
-                sh './$VENV_DIR/Scripts/activate && pip install -r requirements.txt'
+                echo 'Creando entorno virtual e instalando dependencias...'
+                sh '''
+                    python -m venv $VENV_PATH
+                    . $VENV_PATH/bin/activate
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Ejecutar pruebas') {
+            agent {
+                docker {
+                    image 'python:3.10'
+                }
+            }
             steps {
-                sh './$VENV_DIR/Scripts/activate && pytest'
+                echo 'Ejecutando pruebas...'
+                sh '''
+                    . $VENV_PATH/bin/activate
+                    pytest
+                '''
             }
         }
     }
@@ -32,6 +50,9 @@ pipeline {
         }
         failure {
             echo 'Algo falló. Revisa el log.'
+        }
+        success {
+            echo '¡Todo correcto! ✔️'
         }
     }
 }
