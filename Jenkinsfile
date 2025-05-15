@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clonar repositorio') {
             steps {
-                git 'https://github.com/adanantonio07A/tienda.git'
+                git branch: 'main', url: 'https://github.com/adanantonio07A/tienda.git'
             }
         }
 
