@@ -43,26 +43,6 @@ pipeline {
             }
         }
 
-        stage('Iniciar MySQL') {
-            steps {
-                sh '''
-                    echo "Revisando si ya existe el contenedor mysql-test..."
-                    docker ps -a --format '{{.Names}}' | grep -w mysql-test && docker rm -f mysql-test || echo "No existe contenedor previo"
-                    docker run -d --name mysql-test \
-                      -e MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD} \
-                      -e MYSQL_DATABASE=${MYSQL_DB} \
-                      -p ${MYSQL_PORT}:3306 \
-                      mysql:8
-
-                    # Esperar que el puerto esté abierto (MySQL levantado)
-                    for i in {1..30}; do
-                        nc -z ${MYSQL_HOST} ${MYSQL_PORT} && break
-                        echo "Esperando a que MySQL esté disponible..."
-                        sleep 1
-                    done
-                '''
-            }
-        }
       
         stage('Correr tests') {
             steps {
