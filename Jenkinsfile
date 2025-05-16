@@ -16,30 +16,32 @@ pipeline {
             steps {
                 sh '''
                     apt-get update
-                    apt-get install -y default-mysql-client netcat gcc libmariadb-dev
+                    apt-get install -y default-mysql-client libmariadb-dev
                     pip install -r requirements.txt
                 '''
             }
         }
-        stage('Start MySQL') {
+        stage('Iniciar MySQL') {
             steps {
                 sh '''
+                    echo "Revisando si ya existe el contenedor mysql-test..."
+                    docker ps -a --format '{{.Names}}' | grep -w mysql-test && docker rm -f mysql-test || echo "No existe contenedor previo"
                     docker run -d --name mysql-test \
-                    -e MYSQL_ROOT_PASSWORD=root \
-                    -e MYSQL_DATABASE=tienda \
-                    -p 3306:3306 \
-                    mysql:8
+                      -e MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD} \
+                      -e MYSQL_DATABASE=${MYSQL_DB} \
+                      -p ${MYSQL_PORT}:3306 \
+                      mysql:8
 
-                    # Esperar que esté listo
+                    # Esperar que el puerto esté abierto (MySQL levantado)
                     for i in {1..30}; do
-                        nc -z localhost 3306 && break
-                        echo "Esperando a MySQL..."
+                        nc -z ${MYSQL_HOST} ${MYSQL_PORT} && break
+                        echo "Esperando a que MySQL esté disponible..."
+
                         sleep 1
                     done
                 '''
             }
         }
-
 
         stage('Iniciar MySQL') {
             steps {
@@ -61,7 +63,7 @@ pipeline {
                 '''
             }
         }
-
+      
         stage('Correr tests') {
             steps {
                 sh '''
