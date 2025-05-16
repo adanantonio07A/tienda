@@ -27,6 +27,25 @@ pipeline {
                 '''
             }
         }
+        stage('Start MySQL') {
+            steps {
+                sh '''
+                    docker run -d --name mysql-test \
+                    -e MYSQL_ROOT_PASSWORD=root \
+                    -e MYSQL_DATABASE=tienda \
+                    -p 3306:3306 \
+                    mysql:8
+
+                    # Esperar que esté listo
+                    for i in {1..30}; do
+                        nc -z localhost 3306 && break
+                        echo "Esperando a MySQL..."
+                        sleep 1
+                    done
+                '''
+            }
+        }
+
 
         stage('Ejecutar pruebas') {
             agent {
