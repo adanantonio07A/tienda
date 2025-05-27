@@ -170,11 +170,10 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 #🧪 Pruebas con base de datos temporal
 
-# ⚙️ O seguimos con Jenkins y CI/CD
-
 # to run the code:
 #uvicorn main:app --reload
 
 #para pytest:
 
-
+#To run the docker containers
+# docker-compose up --build

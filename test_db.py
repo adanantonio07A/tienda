@@ -4,8 +4,8 @@ from mysql.connector import errorcode
 try:
     cnx = mysql.connector.connect(
         host='127.0.0.1',       # o 'localhost'
-        user='emdep',           # Tu usuario real
-        password='3md3p',       # Tu contraseña real
+        user='tiendauser',           # Tu usuario real
+        password='tiendapass',       # Tu contraseña real
         database='tienda_db',   # La base de datos que creaste
         port=3306               # Puerto por defecto de MySQL
     )

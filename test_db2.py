@@ -1,7 +1,7 @@
 import mysql.connector
 try:
-    cnxDB = mysql.connector.connect(user= 'emdep',
-                                        password= '3md3p',
+    cnxDB = mysql.connector.connect(user= 'tiendauser',
+                                        password= 'tiendapass',
                                             host= '127.0.0.1',
                                         database= 'tienda_db',
                                         autocommit = True)
