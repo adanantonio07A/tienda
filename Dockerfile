@@ -5,7 +5,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # 2.1 Establecer Entorno de desarrollo
-ENV ENV=dev
+ENV ENV=test pytest
 # 3. Copiar los archivos de requisitos y luego instalar dependencias
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

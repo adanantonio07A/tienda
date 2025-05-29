@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db_test:
+    image: mysql:8.0
+    restart: always
+    environment:
+      DB_ROOT_PASSWORD: rootpass
+      DB_DATABASE: tiendatest
+      DB_USER: tiendausertest
+      DB_PASSWORD: tiendapasstest
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+
+volumes:
+  mysql_test_data:
