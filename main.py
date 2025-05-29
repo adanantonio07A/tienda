@@ -48,7 +48,19 @@ from auth import crear_token_acceso, verificar_password
 
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.security import OAuth2
+import os
+from config.dev import DevSettings
+from config.prod import ProdSettings
+from config.test import TestSettings
 
+env = os.getenv("ENV", "dev")
+
+if env == "prod":
+    settings = ProdSettings()
+elif env == "test":
+    settings = TestSettings()
+else:
+    settings = DevSettings()
 
 class OAuth2PasswordBearerWithCookie(OAuth2):
     def __init__(self, tokenUrl: str):
@@ -177,3 +189,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 #To run the docker containers
 # docker-compose up --build
+
+#To run the pytest using docker:
+#docker compose run web pytest
+
